@@ -1,20 +1,26 @@
 <template>
     <div class="settings-page">
         <div class="settings-sidebar">
-            <div v-for="(section, sectionIndex) in settingSections" :key="sectionIndex" class="sidebar-item"
+            <button type="button" v-for="(section, sectionIndex) in settingSections" :key="sectionIndex" class="sidebar-item"
+                :aria-pressed="activeTab === sectionIndex"
                 :class="{ active: activeTab === sectionIndex }" @click="activeTab = sectionIndex">
                 <i :class="section.icon"></i>
                 <span>{{ section.title }}</span>
-            </div>
+            </button>
         </div>
 
         <div class="settings-content">
             <div v-for="(section, sectionIndex) in settingSections" :key="sectionIndex" class="setting-section"
                 v-show="activeTab === sectionIndex">
                 <h3>{{ section.title }}</h3>
+                <ThemePicker v-if="sectionIndex === 0" :model-value="selectedSettings.themeColor?.value"
+                    @update:model-value="value => selectOption(getSettingItem('themeColor').options.find(option => option.value === value), 'themeColor')" />
                 <ExtensionManager v-if="section.title === t('cha-jian')" />
                 <div v-else class="settings-cards">
                     <div v-for="(item, itemIndex) in getVisibleItems(section)" :key="itemIndex" class="setting-card"
+                        :data-setting="item.key" :role="isToggleItem(item) ? 'group' : 'button'"
+                        :tabindex="isToggleItem(item) ? -1 : 0" :aria-label="item.label"
+                        @keydown.enter.self.prevent="handleCardClick(item)" @keydown.space.self.prevent="handleCardClick(item)"
                         :class="{ 'setting-card--toggle': isToggleItem(item) }" @click="handleCardClick(item)">
                         <div class="setting-card-header">
                             <div class="setting-card-title">
@@ -35,6 +41,7 @@
                                 <span>{{ item.icon }}{{ selectedSettings[item.key]?.displayText }}</span>
                                 <button type="button" class="setting-switch" :class="{ active: isToggleEnabled(item) }"
                                     :aria-checked="isToggleEnabled(item)" role="switch"
+                                    :aria-label="item.label"
                                     @click.stop="toggleSetting(item)">
                                     <span class="setting-switch-thumb"></span>
                                 </button>
@@ -201,6 +208,7 @@
 
 <script setup>
 import { ref, onMounted, getCurrentInstance, onUnmounted, reactive } from 'vue';
+import ThemePicker from '@/components/ThemePicker.vue';
 import { useI18n } from 'vue-i18n';
 import { MoeAuthStore } from '../stores/store';
 import ExtensionManager from '@/components/ExtensionManager.vue';
@@ -399,7 +407,7 @@ const getSettingItem = (key) => {
     return null;
 };
 
-const getVisibleItems = (section) => section.items.filter(item => !item.hidden && !getUnavailableSettingText(item));
+const getVisibleItems = (section) => section.items.filter(item => item.key !== 'themeColor' && !item.hidden && !getUnavailableSettingText(item));
 
 const isToggleItem = (item) => {
     if (!item?.options || item.options.length !== 2) return false;
@@ -537,18 +545,18 @@ const toggleSetting = async (item) => {
     markRefreshHint(item.key);
 };
 
-const selectOption = async (option) => {
-    const settingItem = getSettingItem(selectionType.value);
+const selectOption = async (option, key = selectionType.value) => {
+    const settingItem = getSettingItem(key);
     const unavailableText = getUnavailableSettingText(settingItem);
     if (unavailableText) {
         window.$modal.alert(unavailableText);
         return;
     }
-    selectedSettings.value[selectionType.value] = option;
+    selectedSettings.value[key] = option;
     await runSelectAction(settingItem, option);
     saveSettings();
-    if (!shouldKeepSelectionOpen(selectionType.value)) closeSelection();
-    markRefreshHint(selectionType.value);
+    if (!shouldKeepSelectionOpen(key)) closeSelection();
+    markRefreshHint(key);
 };
 
 const selectFontOption = (option) => {

@@ -4,7 +4,7 @@
     <main
         ref="mainScrollRef"
         class="app-main-scroll"
-        :class="{ 'side-navigation-main-content': navigationMode === 'side', collapsed: sidebarCollapsed }"
+        :class="{ 'side-navigation-main-content': navigationMode === 'side', collapsed: sidebarCollapsed, 'settings-main-content': route.name === 'Settings' }"
         @scroll="handleMainScroll"
     >
         <div v-if="!isOnline" class="network-status">
@@ -152,9 +152,10 @@ watch(routeViewKey, (to, from) => {
 });
 
 onMounted(() => {
+    document.body.classList.add('music-app-shell');
     const savedConfig = JSON.parse(localStorage.getItem('settings'));
+    applyColorTheme(savedConfig?.themeColor);
     if (savedConfig) {
-        applyColorTheme(savedConfig['themeColor']);
         applyCustomFont(savedConfig.font || '');
     }
     loadNavigationMode(savedConfig || {});
@@ -178,6 +179,7 @@ onMounted(() => {
 
 // 组件卸载时移除事件监听
 onUnmounted(() => {
+    document.body.classList.remove('music-app-shell');
     stopPageRouteAnimation();
     window.removeEventListener('online', handleOnline);
     window.removeEventListener('offline', handleOffline);
@@ -193,7 +195,7 @@ onUnmounted(() => {
     /* 粉红色主色调 - 用于主要按钮、强调元素 */
     --primary-color: #FF69B4;
     /* 粉红色主色调的RGB值 - 用于需要RGB格式的样式 */
-    --primary-color-rgb: '255, 105, 180';
+    --primary-color-rgb: 255, 105, 180;
     /* 浅粉红色辅助色 - 用于次要按钮、提示信息 */
     --secondary-color: #FFB6C1;
     /* 文本颜色 - 用于正文内容 */

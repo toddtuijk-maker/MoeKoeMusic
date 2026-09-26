@@ -1,4 +1,10 @@
 {
+  "theme-lavender": "Lavender",
+  "theme-teal": "Celadon",
+  "theme-amber": "Amber",
+  "theme-slate": "Graphite",
+  "theme-gallery-title": "Your music, your colors",
+  "theme-gallery-description": "Find your palette. Changes apply instantly in light, dark, or system mode.",
   "tui-jian": "Recommendations",
   "tui-jian-ge-qu": "Recommended Tracks",
   "tui-jian-ge-dan": "Recommended Playlists",

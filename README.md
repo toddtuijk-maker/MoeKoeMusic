@@ -1,3 +1,5 @@
+> **UI 优化版**：顶部导航、内容区与播放器采用一体化界面；提供 8 款可预览配色，兼容浅色、深色与跟随系统。原有音乐功能保留。截图、使用方式与验证范围见 [UI 更新说明](docs/UI_REFRESH.md)。
+
 <br />
 <p align="center">
     <img src="https://github.com/iAJue/MoeKoeMusic/raw/main/images/hero.png" alt="hero" width="250" height="250">

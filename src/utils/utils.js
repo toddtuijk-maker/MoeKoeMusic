@@ -1,4 +1,5 @@
 import i18n from '@/utils/i18n';
+import { getColorTheme } from '@/config/themes';
 
 const appFontStyleId = 'moekoe-custom-font';
 const defaultFontFamily = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif";
@@ -22,6 +23,8 @@ body, html, button, input, textarea, select {
 };
 
 export const applyColorTheme = (theme) => {
+    const palette = getColorTheme(theme);
+    theme = palette.value;
     let colors;
     if (theme === 'blue') {
         colors = {
@@ -81,6 +84,25 @@ export const applyColorTheme = (theme) => {
         };
     }
 
+    if (!['pink', 'blue', 'green', 'orange'].includes(theme)) {
+        const rgb = palette.accent.match(/[a-f\d]{2}/gi).map(value => parseInt(value, 16)).join(', ');
+        colors = {
+            '--primary-color': palette.accent,
+            '--primary-color-rgb': rgb,
+            '--secondary-color': palette.background,
+            '--background-color': palette.background,
+            '--background-color-secondary': palette.background,
+            '--color-primary': palette.ink,
+            '--color-primary-light': `rgba(${rgb}, 0.1)`,
+            '--border-color': `rgba(${rgb}, 0.2)`,
+            '--hover-color': `rgba(${rgb}, 0.08)`,
+            '--color-secondary-bg-for-transparent': `rgba(${rgb}, 0.12)`,
+            '--color-box-shadow': `rgba(${rgb}, 0.12)`
+        };
+    }
+    colors['--accent-ink-light'] = palette.ink;
+    colors['--accent-ink-dark'] = palette.night;
+    document.documentElement.dataset.colorTheme = theme;
     Object.keys(colors).forEach(key => {
         document.documentElement.style.setProperty(key, colors[key]);
     });
@@ -215,9 +237,10 @@ export const getAudioOutputDeviceSignature = async () => {
 };
 
 let themeMediaQueryListener = null;
+let themeMediaQuery = null;
 export const setTheme = (theme) => {
     const html = document.documentElement;
-    const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+    const prefersDarkScheme = themeMediaQuery ||= window.matchMedia('(prefers-color-scheme: dark)');
 
     if (themeMediaQueryListener) {
         prefersDarkScheme.removeEventListener('change', themeMediaQueryListener);

@@ -1,4 +1,10 @@
 {
+  "theme-lavender": "ラベンダー",
+  "theme-teal": "青磁",
+  "theme-amber": "琥珀",
+  "theme-slate": "グラファイト",
+  "theme-gallery-title": "音楽に、あなたの色を",
+  "theme-gallery-description": "配色はすぐに反映されます。すべてのテーマがライト・ダーク・システム設定に対応。",
   "tui-jian": "推薦する",
   "tui-jian-ge-qu": "おすすめの曲",
   "tui-jian-ge-dan": "おすすめのプレイリスト",

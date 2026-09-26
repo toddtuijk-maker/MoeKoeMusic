@@ -1,4 +1,10 @@
 {
+  "theme-lavender": "라벤더",
+  "theme-teal": "청자",
+  "theme-amber": "호박",
+  "theme-slate": "흑연",
+  "theme-gallery-title": "나의 음악, 나의 색상",
+  "theme-gallery-description": "원하는 색상을 선택하면 바로 적용됩니다. 모든 테마가 라이트, 다크, 시스템 모드를 지원합니다.",
   "tui-jian": "추천하다",
   "tui-jian-ge-qu": "추천곡",
   "tui-jian-ge-dan": "추천 재생목록",

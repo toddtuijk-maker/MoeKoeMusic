@@ -1,4 +1,5 @@
 import { computed } from 'vue';
+import { colorThemes } from './themes';
 
 export const createSettingSections = (t, actions = {}) => computed(() => [
     {
@@ -28,12 +29,7 @@ export const createSettingSections = (t, actions = {}) => computed(() => [
                 defaultValue: 'pink',
                 itemIcon: 'fas fa-paint-brush',
                 selectionTitle: t('xuan-ze-zhu-se-tiao'),
-                options: [
-                    { displayText: t('shao-nv-fen'), value: 'pink' },
-                    { displayText: t('nan-nan-lan'), value: 'blue' },
-                    { displayText: t('tou-ding-lv'), value: 'green' },
-                    { displayText: t('mi-gan-cheng'), value: 'orange' }
-                ],
+                options: colorThemes.map(theme => ({ displayText: t(theme.label), value: theme.value })),
                 label: t('zhu-se-tiao'),
                 icon: '🎨 '
             },

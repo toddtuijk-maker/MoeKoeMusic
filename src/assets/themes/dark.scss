@@ -15,8 +15,7 @@ html.dark {
 
     background-color: $bg-dark;
     color: $text-primary;
-    filter: brightness(0.8);
-    mix-blend-mode: multiply;
+    color-scheme: dark;
 
     body {
         background-color: $bg-dark;
