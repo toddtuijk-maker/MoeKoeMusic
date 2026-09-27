@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="container home-page">
         <HomeRecommendations :playerControl="playerControl" />
         <h2 class="section-title">
             <img :src="`./assets/images/home/mama.png`" class="mama" @click="addAllSongsToQueue">

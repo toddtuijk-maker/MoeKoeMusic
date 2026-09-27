@@ -23,7 +23,7 @@ async function click(selector) {
 }
 async function screenshot(name) {
     await evaluate(() => { document.querySelector('.settings-content')?.scrollTo(0, 0); });
-    await pause(150);
+    await pause(500);
     const image = await win.webContents.capturePage();
     await fs.writeFile(path.join(output, name + '.png'), image.toPNG());
 }
@@ -37,7 +37,7 @@ app.whenReady().then(async () => {
     // Seed only test preferences before mounting the application.
     await win.loadURL(url + '/favicon.ico');
     await evaluate(() => {
-        localStorage.setItem('settings', JSON.stringify({language: 'zh-CN', themeColor: 'pink', theme: 'light', apiBaseUrl: 'http://127.0.0.1:16521'}));
+        localStorage.setItem('settings', JSON.stringify({language: 'zh-CN', themeColor: 'pink', theme: 'light', navigationMode: 'top', apiBaseUrl: 'http://127.0.0.1:16521'}));
         localStorage.setItem('disclaimerAccepted', 'true');
         localStorage.setItem('moekoe:onboarding-guide-intro-version', '1');
     });
@@ -45,8 +45,8 @@ app.whenReady().then(async () => {
     await win.loadURL(url + '/#/settings');
     await pause(1500);
     await screenshot('initial');
-    assert.equal(await evaluate(() => document.querySelectorAll('.theme-choice').length), 8);
-    const ids = ['pink', 'blue', 'green', 'orange', 'lavender', 'teal', 'amber', 'slate'];
+    assert.equal(await evaluate(() => document.querySelectorAll('.theme-choice').length), 9);
+    const ids = ['pink', 'blue', 'green', 'orange', 'lavender', 'teal', 'amber', 'slate', 'neon'];
     for (const mode of ['light', 'dark']) {
         await click('[data-setting="theme"]');
         await click(`.modal-content > ul > li:nth-child(${mode === 'light' ? 2 : 3})`);
@@ -62,7 +62,7 @@ app.whenReady().then(async () => {
             }));
             assert.equal(state.selected, id); assert.equal(state.stored, id); assert.equal(state.theme, id);
             assert.equal(state.filter, 'none'); assert.equal(state.overflow, false);
-            if (mode === 'dark') assert.equal(state.background, 'rgb(30, 34, 43)');
+            if (mode === 'dark') assert.equal(state.background, 'rgb(23, 25, 27)');
         }
         await click('.theme-choice:has(input[value="lavender"])');
         await screenshot('settings-' + mode);
@@ -104,12 +104,30 @@ app.whenReady().then(async () => {
     assert.equal(await evaluate(() => document.querySelector('.side-navigation').classList.contains('collapsed')), true);
     await click('.side-action-button[title="折叠/展开"]');
     await screenshot('settings-sidebar');
+    await click('.side-profile-menu-button');
+    assert.equal(await evaluate(() => document.querySelector('.side-profile-menu').getBoundingClientRect().top > document.querySelector('.side-brand').getBoundingClientRect().bottom), true);
+    await click('.side-profile-menu-button');
+    win.setSize(890, 720); await pause(350);
+    const playerBounds = await evaluate(() => Array.from(document.querySelectorAll('.player-bar .control-btn, .player-bar .extra-btn, .player-bar .volume-control')).map(el => {
+        const r = el.getBoundingClientRect(); return {left: r.left, right: r.right, viewport: innerWidth};
+    }));
+    assert(playerBounds.every(r => r.left >= 0 && r.right <= r.viewport + 1), 'Content player controls clip at minimum desktop width: ' + JSON.stringify(playerBounds));
+    assert.equal(await evaluate(() => document.querySelector('.player-bar .album-art').getBoundingClientRect().width), 60);
+    await screenshot('settings-sidebar-890');
+    win.setSize(1280, 850); await pause(350);
     await win.webContents.executeJavaScript("location.hash = '#/'"); await pause(1500);
     assert.equal(await evaluate(() => !!document.querySelector('.home-recommendations-section')), true);
     await screenshot('home-light');
+    await win.webContents.executeJavaScript("import('/src/utils/utils.js').then(m => {m.applyColorTheme('neon'); m.setTheme('dark');})");
+    await screenshot('home-dark');
     await win.webContents.executeJavaScript("location.hash = '#/discover'"); await pause(1200);
     assert.equal(await evaluate(() => !!document.querySelector('.player-container')), true);
-    await screenshot('discover-light');
+    await screenshot('discover-dark');
+    await win.webContents.executeJavaScript("location.hash = '#/login'"); await pause(600);
+    assert.equal(await evaluate(() => !!document.querySelector('.login-container')), true);
+    assert.equal(await evaluate(() => getComputedStyle(document.querySelector('.login-container .primary-button')).color), 'rgb(23, 25, 27)');
+    assert.equal(await evaluate(() => getComputedStyle(document.querySelector('.login-container .append-button:disabled')).backgroundColor), 'rgb(48, 52, 54)');
+    await screenshot('login-dark');
     await click('.extra-btn[title="播放列表"]');
     assert.equal(await evaluate(() => !!document.querySelector('.queue-popup')), true);
     await click('.extra-btn[title="播放列表"]');
@@ -120,7 +138,7 @@ app.whenReady().then(async () => {
     for (const locale of ['zh-CN', 'zh-TW', 'en', 'ja', 'ko', 'ru']) {
         await win.webContents.executeJavaScript(`import('/src/utils/i18n.js').then(m => { m.default.global.locale = '${locale}'; })`);
         const labels = await evaluate(() => Array.from(document.querySelectorAll('.theme-choice-label')).map(el => el.textContent));
-        assert.equal(labels.length, 8); assert(labels.every(text => !text.includes('theme-')));
+        assert.equal(labels.length, 9); assert(labels.every(text => !text.includes('theme-')));
     }
     await win.webContents.executeJavaScript("import('/src/utils/i18n.js').then(m => { m.default.global.locale = 'zh-CN'; })");
     win.webContents.debugger.attach('1.3');
@@ -128,7 +146,28 @@ app.whenReady().then(async () => {
     const duration = await evaluate(() => parseFloat(getComputedStyle(document.querySelector('.page-route-view')).animationDuration));
     assert(duration <= .00001);
     win.webContents.debugger.detach();
+    // Missing appearance preferences use the new defaults without migrating saved choices.
+    await evaluate(() => {
+        localStorage.removeItem('theme');
+        localStorage.setItem('settings', JSON.stringify({language: 'zh-CN', apiBaseUrl: 'http://127.0.0.1:16521'}));
+    });
+    await win.loadURL(url + '/favicon.ico');
+    await win.loadURL(url + '/#/'); await pause(1500);
+    assert.equal(await evaluate(() => document.documentElement.dataset.colorTheme), 'neon');
+    assert.equal(await evaluate(() => document.documentElement.classList.contains('dark')), true);
+    assert.equal(await evaluate(() => !!document.querySelector('.side-navigation')), true);
+    assert.equal(await evaluate(() => !!document.querySelector('.icon-recommendations')), true);
+    await screenshot('home-default');
+    await click('.side-footer a');
+    assert.equal(await evaluate(() => !!document.querySelector('.settings-page')), true);
+    await screenshot('settings-default');
+    await win.webContents.executeJavaScript("location.hash = '#/'"); await pause(350);
+    await click('.recommend-title');
+    assert.equal(await evaluate(() => localStorage.getItem('homeRecommendCardStyle')), 'image');
+    await pause(350);
+    assert.equal(await evaluate(() => !!document.querySelector('.radio-card')), true);
+    await click('.recommend-title');
     assert.deepEqual(failures, [], 'Renderer errors');
-    console.log(JSON.stringify({passed: true, checks: ['8 palettes × light/dark', 'persistence', 'keyboard', 'system mode', 'explicit mode', '960/760 layouts', 'sidebar collapse', 'content player layout', 'home/discover routes', 'queue/speed menus', '6 locales', 'reduced motion'], output}, null, 2));
+    console.log(JSON.stringify({passed: true, checks: ['9 palettes × light/dark', 'persistence', 'keyboard', 'system mode', 'explicit mode', '960/760 layouts', 'sidebar collapse', 'content player layout', 'home/discover routes', 'queue/speed menus', '6 locales', 'reduced motion', 'first-run defaults'], output}, null, 2));
     app.exit(0);
 }).catch(async error => { if (win) await screenshot('failure'); console.error(error); app.exit(1); });

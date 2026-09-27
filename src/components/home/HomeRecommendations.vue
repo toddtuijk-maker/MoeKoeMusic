@@ -4,6 +4,7 @@
             @keydown.enter.prevent="toggleRecommendCardStyle" @keydown.space.prevent="toggleRecommendCardStyle">
             {{ $t('tui-jian') }}
         </h2>
+        <p class="home-intro">{{ $t('home-mood') }}</p>
         <div class="recommendations" :class="`recommendations-${recommendCardStyle}`">
             <Transition name="recommend-style" mode="out-in">
                 <div v-if="recommendCardStyle === 'image'" key="image" class="recommendations-layout">
@@ -128,7 +129,7 @@ const props = defineProps({
 });
 
 const RECOMMEND_CARD_STYLE_KEY = 'homeRecommendCardStyle';
-const recommendCardStyle = ref(localStorage.getItem(RECOMMEND_CARD_STYLE_KEY) === 'icon' ? 'icon' : 'image');
+const recommendCardStyle = ref(localStorage.getItem(RECOMMEND_CARD_STYLE_KEY) === 'image' ? 'image' : 'icon');
 const currentMode = ref('1');
 const modes = ['1', '2', '3', '4', '6'];
 

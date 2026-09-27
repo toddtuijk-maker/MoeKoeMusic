@@ -1,12 +1,12 @@
-$bg-dark: #121212;
-$bg-darker: #1a1a1a;
-$bg-card: #1d1d1d;
-$bg-input: #2a2a2a;
-$bg-hover: #363636;
-$border-color: #333;
-$text-primary: #e1e1e1;
-$text-secondary: #999;
-$text-muted: #777;
+$bg-dark: var(--ui-canvas, #121212);
+$bg-darker: var(--ui-surface, #1a1a1a);
+$bg-card: var(--ui-surface, #1d1d1d);
+$bg-input: var(--ui-inset, #2a2a2a);
+$bg-hover: var(--ui-border, #363636);
+$border-color: var(--ui-border, #333);
+$text-primary: var(--ui-text, #e1e1e1);
+$text-secondary: var(--ui-muted, #999);
+$text-muted: var(--ui-muted, #777);
 
 html.dark {
     --text-color: #{$text-primary};

@@ -51,7 +51,7 @@ const route = useRoute();
 const playerControl = ref(null);
 const mainScrollRef = ref(null);
 const isOnline = ref(navigator.onLine);
-const navigationMode = ref('top');
+const navigationMode = ref('side');
 const sidebarCollapsed = ref(localStorage.getItem('sidebarCollapsed') === '1');
 const playerBarLayout = ref('full');
 const isPageRouteEntering = ref(false);
@@ -88,7 +88,7 @@ const handleNetworkChange = (online) => {
 const handleOnline = () => handleNetworkChange(true);
 const handleOffline = () => handleNetworkChange(false);
 const loadNavigationMode = (settings = JSON.parse(localStorage.getItem('settings')) || {}) => {
-    navigationMode.value = settings.navigationMode === 'side' ? 'side' : 'top';
+    navigationMode.value = settings.navigationMode === 'top' ? 'top' : 'side';
     playerBarLayout.value = settings.playerBarLayout === 'content' ? 'content' : 'full';
     applyPlayerBarLayout();
 };
@@ -154,15 +154,12 @@ watch(routeViewKey, (to, from) => {
 onMounted(() => {
     document.body.classList.add('music-app-shell');
     const savedConfig = JSON.parse(localStorage.getItem('settings'));
-    applyColorTheme(savedConfig?.themeColor);
+    applyColorTheme(savedConfig?.themeColor || 'neon');
     if (savedConfig) {
         applyCustomFont(savedConfig.font || '');
     }
     loadNavigationMode(savedConfig || {});
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme) {
-        setTheme(savedTheme);
-    }
+    setTheme(localStorage.getItem('theme') || savedConfig?.theme || 'dark');
 
     // 添加网络状态监听
     window.addEventListener('online', handleOnline);

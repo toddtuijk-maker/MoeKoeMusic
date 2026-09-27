@@ -25,6 +25,9 @@
     </div>
 
     <aside class="side-navigation" :class="{ collapsed: isCollapsed }">
+        <router-link to="/" class="side-brand" title="MoeKoe Music">
+            <i class="fas fa-compact-disc" aria-hidden="true"></i><span>MoeKoe <small>MUSIC</small></span>
+        </router-link>
         <div class="side-profile">
             <router-link :to="!isCollapsed ? '/library' : '/settings'" class="side-profile-link">
                 <img :src="MoeAuth.UserInfo ? MoeAuth.UserInfo.pic : './assets/images/profile.jpg'"
@@ -135,6 +138,11 @@
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="side-footer">
+            <router-link to="/settings" class="side-link" :title="$t('she-zhi')">
+                <i class="fas fa-sliders-h" aria-hidden="true"></i><span>{{ $t('she-zhi') }}</span>
+            </router-link>
         </div>
     </aside>
 

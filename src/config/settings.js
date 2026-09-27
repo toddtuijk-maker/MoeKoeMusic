@@ -26,7 +26,7 @@ export const createSettingSections = (t, actions = {}) => computed(() => [
             {
                 key: 'themeColor',
                 selectAction: 'applyThemeColor',
-                defaultValue: 'pink',
+                defaultValue: 'neon',
                 itemIcon: 'fas fa-paint-brush',
                 selectionTitle: t('xuan-ze-zhu-se-tiao'),
                 options: colorThemes.map(theme => ({ displayText: t(theme.label), value: theme.value })),
@@ -36,7 +36,7 @@ export const createSettingSections = (t, actions = {}) => computed(() => [
             {
                 key: 'theme',
                 selectAction: 'applyTheme',
-                defaultValue: 'light',
+                defaultValue: 'dark',
                 itemIcon: 'fas fa-moon',
                 selectionTitle: t('xuan-ze-wai-guan'),
                 options: [
@@ -59,7 +59,7 @@ export const createSettingSections = (t, actions = {}) => computed(() => [
             },
             {
                 key: 'navigationMode',
-                defaultValue: 'top',
+                defaultValue: 'side',
                 itemIcon: 'fas fa-bars',
                 selectionTitle: '导航方式',
                 options: [
