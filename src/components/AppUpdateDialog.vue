@@ -38,7 +38,7 @@ const props = defineProps({
 
 const emit = defineEmits(['badge-change']);
 
-const projectRepoUrl = 'https://github.com/MoeKoeMusic/MoeKoeMusic';
+const projectRepoUrl = 'https://github.com/toddtuijk-maker/MoeKoeMusic';
 const repoUrl = `${projectRepoUrl}/releases`;
 const showUpdateDialog = ref(false);
 const showNewBadge = ref(false);
@@ -102,7 +102,7 @@ const fetchLatestVersion = async () => {
     }
 
     try {
-        const response = await fetch('https://api.github.com/repos/iAJue/MoeKoeMusic/releases/latest');
+        const response = await fetch('https://api.github.com/repos/toddtuijk-maker/MoeKoeMusic/releases/latest');
         const data = await response.json();
         downloadUrl.value = getPlatformDownloadUrl(data);
         latestVersion.value = data.tag_name.replace(/^v/, '');

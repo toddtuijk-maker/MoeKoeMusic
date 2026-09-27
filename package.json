@@ -1,6 +1,6 @@
 {
   "name": "moekoemusic",
-  "version": "1.7.0",
+  "version": "1.7.1",
   "homepage": "https://music.moekoe.cn/",
   "main": "electron/main.js",
   "scripts": {
@@ -32,7 +32,7 @@
   "build": {
     "publish": {
       "provider": "github",
-      "owner": "MoeKoeMusic",
+      "owner": "toddtuijk-maker",
       "repo": "MoeKoeMusic"
     },
     "compression": "normal",
@@ -84,8 +84,7 @@
         {
           "target": "nsis",
           "arch": [
-            "x64",
-            "ia32"
+            "x64"
           ]
         }
       ],

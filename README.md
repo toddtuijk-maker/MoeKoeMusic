@@ -1,5 +1,7 @@
 > **UI 优化版**：参考汽水音乐 PC 端的深色侧栏风格，导航、内容区与播放器采用一体化界面；提供 9 款可预览配色，兼容浅色、深色与跟随系统。原有音乐功能保留。截图、使用方式与验证范围见 [UI 更新说明](docs/UI_REFRESH.md)。
 
+**Windows x64 安装包：** [下载 v1.7.1 UI 优化版](https://github.com/toddtuijk-maker/MoeKoeMusic/releases/download/v1.7.1/MoeKoe_Music_Setup_v1.7.1-x64.exe) · [发布说明与校验文件](https://github.com/toddtuijk-maker/MoeKoeMusic/releases/tag/v1.7.1)。已包含运行环境与 API，无需安装 Node.js。此社区构建未做代码签名。
+
 <br />
 <p align="center">
     <img src="https://github.com/iAJue/MoeKoeMusic/raw/main/images/hero.png" alt="hero" width="250" height="250">

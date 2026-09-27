@@ -35,7 +35,7 @@ async function checkForUpdatesSilently() {
 export function setupAutoUpdater(mainWindow) {
     autoUpdater.setFeedURL({
         provider: 'github',
-        owner: 'MoeKoeMusic',
+        owner: 'toddtuijk-maker',
         repo: 'MoeKoeMusic',
         releaseType: 'release'
     });

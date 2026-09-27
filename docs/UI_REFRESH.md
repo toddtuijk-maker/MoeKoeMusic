@@ -56,7 +56,26 @@ npx electron tests/ui-smoke.cjs
 
 测试截图默认保存到系统临时目录的 `moekoe-ui-smoke`，可通过 `UI_TEST_OUTPUT` 指定目录。测试脚本依赖开发服务器提供模块，用于运行期检查；生产产物另经构建验证。
 
-边界：未登录真实酷狗账号，因此未宣称验证付费歌曲、账号认证或云盘写入；未在 macOS/Linux 实机测试、未生成各平台安装包。原版构建也存在 `head.png` 路径提示、大于 500KB 的主包提示和浏览器数据库过期提示，本次未升级依赖或改变这些功能相关配置。
+边界：未登录真实酷狗账号，因此未宣称验证付费歌曲、账号认证或云盘写入；未在 macOS/Linux 实机测试、未生成这两个平台的安装包。原版构建也存在 `head.png` 路径提示、大于 500KB 的主包提示和浏览器数据库过期提示，本次未升级依赖或改变这些功能相关配置。
+
+## Windows 安装包（v1.7.1）
+
+[下载 Windows x64 安装包](https://github.com/toddtuijk-maker/MoeKoeMusic/releases/download/v1.7.1/MoeKoe_Music_Setup_v1.7.1-x64.exe)，或在 [Release 页面](https://github.com/toddtuijk-maker/MoeKoeMusic/releases/tag/v1.7.1) 下载 SHA-256 校验文件。已内置 Electron 与 API，无需另装 Node.js。本次提供 x64：API 子模块本身使用 x64 构建目标，故不再生成带 x64 API 的错误 32 位安装包。安装包未做代码签名。
+
+版本号、安装完成页、应用更新源和更新对话框均指向本 fork 的 v1.7.1 发布，防止更新时混入上游原版。保留上游作者署名和许可证。
+
+验证：NSIS 安装器在独立目录静默安装返回 0；安装后的程序从本地 `app.asar` 加载，Electron IPC、默认霓光深色侧栏、9 款主题与主题保存正常；内置 API `/top/card` 返回 `error_code: 0`；卸载返回 0，测试目录的程序已移除。另对相同打包产物验证真实鼠标输入可跳过新手引导并切换主题。测试使用独立临时用户配置，不登录真实账号。
+
+使用 Node 24，在前述依赖安装完成后复现：
+
+```sh
+npm run build
+npm run electron:build:win
+# 对安装后的程序执行检查，参数替换为实际安装路径：
+node tests/installed-smoke.cjs "C:/path/to/MoeKoe Music.exe"
+```
+
+安装器、`.blockmap` 和 `latest.yml` 上传至 GitHub Releases；二进制不放入 Git 历史。校验文件的 SHA-256 对应安装器：`7aad5f81d1087b5a2bdd5167d99aa650b98439d42234488d12b6d0dbcb157eb2`。
 
 ## 调研依据
 
